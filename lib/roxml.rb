@@ -44,6 +44,8 @@ module ROXML # :nodoc:
         end
         if params[:namespaces]
           params[:namespaces].each { |prefix, url| root.add_namespace_definition(prefix, url) }
+        elsif self.class.roxml_namespaces
+          self.class.roxml_namespaces.each { |prefix, url| root.add_namespace_definition(prefix, url) }
         end
       end
     end

@@ -64,4 +64,37 @@ describe ROXML, "#xml_namespaces" do
       end
     end
   end
+  describe "for writing" do
+    class NamespacedNode
+      include ROXML
+
+      xml_namespaces \
+        :ns1 => 'http://example.com',
+        :ns2 => 'http://example2.com'
+
+      xml_accessor :ex1
+    end
+
+    class RootNode
+      include ROXML
+
+      xml_name "RootNode"
+
+      xml_accessor :node, :from => "NamespacedNode", as: NamespacedNode
+    end
+
+    before do
+       @xml = %{
+<RootNode>
+  <NamespacedNode xmlns:ns1="http://example.com" xmlns:ns2="http://example2.com">
+    <ex1>1</ex1>
+  </NamespacedNode>
+</RootNode>
+       }
+    end
+
+    it "should write out namespaces in middle node" do
+      expect(RootNode.from_xml(@xml).to_xml.to_s).to eq(@xml.strip)
+    end
+  end
 end
